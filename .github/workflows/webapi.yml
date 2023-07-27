@@ -19,7 +19,14 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-      
+      - name: Azure Login
+        uses: Azure/login@v1.4.2
+        with: 
+          creds: ${{ secrets.AZURE_SPN_CREDENTIAL }}
+      - name: bicepInfra
+        working-directory: '${{ github.workspace }}/WeatherApi/bicep'
+        run: |
+            az deployment group create -g aweatherwebRG -f ./Main.bicep -p ./main.parameters.json
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v2
         with:
